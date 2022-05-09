@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Scanner;
 
 public class ClientController {
@@ -23,11 +25,39 @@ public class ClientController {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        view.getSendButton().addActionListener(new SendAL());
+        view.getLoginButton().addActionListener(new LoginAL());
+        view.getSignupButton().addActionListener(new SignupAL());
         while (true) {
-            while(tgb.hasNext()) {
-                client.send(tgb.nextLine());
+            boolean isEmpty = client.getIn().getMsgQueue().isEmpty();
+            if(!isEmpty) {
+                System.out.println("test");
+                view.getChatTextArea().append(client.getIn().getMsgQueue().poll());
             }
+            System.out.print("");
         }
 
+    }
+
+    private class SendAL implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            client.send(view.getMsgField().getText());
+            view.getMsgField().setText("");
+        }
+    }
+
+    private class LoginAL implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            System.out.println("login");
+        }
+    }
+
+    private class SignupAL implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            System.out.println("sign up");
+        }
     }
 }

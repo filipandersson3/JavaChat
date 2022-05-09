@@ -7,11 +7,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Model {
-    String ip;
-    int port;
-    Socket socket;
-    ServerSocket serverSocket;
-    ArrayList<PrintWriter> out = new ArrayList<>();
+    private String ip;
+    private int port;
+    private Socket socket;
+    private ServerSocket serverSocket;
+    private ArrayList<PrintWriter> out = new ArrayList<>();
+    private ClientListenerThread in;
 
     public Model(String ip, int port) {
         this.ip = ip;
@@ -28,7 +29,7 @@ public class Model {
         //Connected
         try {
             out.add(new PrintWriter(socket.getOutputStream(),true));
-            ListenerThread in = new ListenerThread(new BufferedReader(new InputStreamReader(socket.getInputStream()
+            in = new ClientListenerThread(new BufferedReader(new InputStreamReader(socket.getInputStream()
             )));
             Thread listener = new Thread(in);
             listener.start();
@@ -71,5 +72,9 @@ public class Model {
             e.printStackTrace();
         }
         System.out.println("Done!");
+    }
+
+    public ClientListenerThread getIn() {
+        return in;
     }
 }

@@ -48,7 +48,8 @@ public class ClientController {
     private class LoginAL implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println("login");
+            String name = JOptionPane.showInputDialog(null,"Enter Name");
+            String password = JOptionPane.showInputDialog(null,"Enter Password");
         }
     }
 

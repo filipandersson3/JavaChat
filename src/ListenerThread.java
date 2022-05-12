@@ -3,13 +3,15 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class ClientListenerThread implements Runnable{
+public class ListenerThread implements Runnable{
     private BufferedReader in;
     private String msg = null;
     private Queue<String> msgQueue = new LinkedList<String>();
+    private boolean isServer;
 
-    public ClientListenerThread(BufferedReader in) {
+    public ListenerThread(BufferedReader in, boolean isServer) {
         this.in = in;
+        this.isServer = isServer;
     }
 
     @Override

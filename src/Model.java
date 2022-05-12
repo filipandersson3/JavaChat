@@ -12,7 +12,7 @@ public class Model {
     private Socket socket;
     private ServerSocket serverSocket;
     private ArrayList<PrintWriter> out = new ArrayList<>();
-    private ClientListenerThread in;
+    private ListenerThread in;
 
     public Model(String ip, int port) {
         this.ip = ip;
@@ -29,8 +29,8 @@ public class Model {
         //Connected
         try {
             out.add(new PrintWriter(socket.getOutputStream(),true));
-            in = new ClientListenerThread(new BufferedReader(new InputStreamReader(socket.getInputStream()
-            )));
+            in = new ListenerThread(new BufferedReader(new InputStreamReader(socket.getInputStream()
+            )),false);
             Thread listener = new Thread(in);
             listener.start();
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class Model {
         System.out.println("Done!");
     }
 
-    public ClientListenerThread getIn() {
+    public ListenerThread getIn() {
         return in;
     }
 

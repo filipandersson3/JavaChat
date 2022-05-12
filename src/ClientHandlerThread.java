@@ -16,7 +16,7 @@ public class ClientHandlerThread implements Runnable{
     private ServerSocket serverSocket;
     private ArrayList<Socket> connections = new ArrayList<>();
     private ArrayList<PrintWriter> out = new ArrayList<>();
-    private ArrayList<ServerListenerThread> inList = new ArrayList<>();
+    private ArrayList<ListenerThread> inList = new ArrayList<>();
 
     public ClientHandlerThread(ServerSocket serverSocket, ArrayList<PrintWriter> out) {
         this.serverSocket = serverSocket;
@@ -34,10 +34,10 @@ public class ClientHandlerThread implements Runnable{
             if (connectionListener.getConnections().size() >= connectionCount) {
                 System.out.println("connected");
                 Socket connection = connectionListener.getConnections().get(connectionCount-1);
-                ServerListenerThread in =
+                ListenerThread in =
                         null;
                 try {
-                    in = new ServerListenerThread(new BufferedReader(new InputStreamReader(connection.getInputStream())));
+                    in = new ListenerThread(new BufferedReader(new InputStreamReader(connection.getInputStream())),true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -53,7 +53,7 @@ public class ClientHandlerThread implements Runnable{
                 out.get(connectionCount-1).println("Your ID: " + (connectionCount-1));
                 connectionCount++;
             }
-            for (ServerListenerThread in:
+            for (ListenerThread in:
                  inList) {
                 if (!in.getMsgQueue().isEmpty()) {
                     for (PrintWriter clientOut:

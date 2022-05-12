@@ -29,10 +29,8 @@ public class ClientController {
         view.getLoginButton().addActionListener(new LoginAL());
         view.getSignupButton().addActionListener(new SignupAL());
         while (true) {
-            boolean isEmpty = client.getIn().getMsgQueue().isEmpty();
-            if(!isEmpty) {
-                System.out.println("test");
-                view.getChatTextArea().append(client.getIn().getMsgQueue().poll());
+            if(!client.getIn().getMsgQueue().isEmpty()) {
+                view.getChatTextArea().append(client.getIn().getMsgQueue().poll() + "\n");
             }
             System.out.print("");
         }

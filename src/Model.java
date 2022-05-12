@@ -77,4 +77,8 @@ public class Model {
     public ClientListenerThread getIn() {
         return in;
     }
+
+    public ArrayList<PrintWriter> getOut() {
+        return out;
+    }
 }

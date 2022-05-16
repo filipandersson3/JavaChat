@@ -55,11 +55,20 @@ public class ClientHandlerThread implements Runnable{
             }
             for (ListenerThread in:
                  inList) {
-                if (!in.getMsgQueue().isEmpty()) {
-                    for (PrintWriter clientOut:
-                            out) {
-                        clientOut.println(in.getMsgQueue().peek());
-                        System.out.println("ello");
+                String msg = in.getMsgQueue().peek();
+                if (!in.getMsgQueue().isEmpty() && msg != null) {
+                    if (msg.startsWith("/login")) {
+                        String name = msg.split(" username:")[1];
+                        name = name.split(" password:")[0];
+                        String password = msg.split(" password:")[1];
+                        System.out.println(name);
+                        System.out.println(password);
+                    } else {
+                        for (PrintWriter clientOut:
+                                out) {
+                            clientOut.println(in.getMsgQueue().peek());
+                            System.out.println("ello");
+                        }
                     }
                     in.getMsgQueue().poll();
                 }

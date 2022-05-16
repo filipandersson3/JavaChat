@@ -1,3 +1,5 @@
+import BCrypt.BCrypt;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,6 +52,8 @@ public class ClientController {
         public void actionPerformed(ActionEvent actionEvent) {
             String name = JOptionPane.showInputDialog(null,"Enter Name");
             String password = JOptionPane.showInputDialog(null,"Enter Password");
+            password = BCrypt.hashpw(password, BCrypt.gensalt());
+            client.send("/login " + "username:" + name + " password:" + password);
         }
     }
 

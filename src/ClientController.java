@@ -10,6 +10,7 @@ public class ClientController {
     private int port;
     private Model client;
     private ClientView view;
+    private String id;
 
     public static void main(String[] args) {
         ClientController clientController = new ClientController();
@@ -22,6 +23,7 @@ public class ClientController {
         client = new Model(ip,port);
         client.ClientStart();
         view = new ClientView();
+
         JFrame frame = new JFrame("Chat");
         frame.setContentPane(view.getPanel1());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,8 +33,15 @@ public class ClientController {
         view.getLoginButton().addActionListener(new LoginAL());
         view.getSignupButton().addActionListener(new SignupAL());
         while (true) {
-            if(!client.getIn().getMsgQueue().isEmpty()) {
-                view.getChatTextArea().append(client.getIn().getMsgQueue().poll() + "\n");
+            String msg = client.getIn().getMsgQueue().peek();
+            if(!client.getIn().getMsgQueue().isEmpty() && msg != null) {
+                if (msg.startsWith("Your ID: ")) {
+                    id = msg.split("Your ID: ")[1];
+                    System.out.println(id);
+                } else {
+                    view.getChatTextArea().append(msg + "\n");
+                }
+                client.getIn().getMsgQueue().poll();
             }
             System.out.print("");
         }
@@ -42,7 +51,7 @@ public class ClientController {
     private class SendAL implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            client.send(view.getMsgField().getText());
+            client.send("/msg id:" + id + " msg:" + view.getMsgField().getText());
             view.getMsgField().setText("");
         }
     }
@@ -52,7 +61,7 @@ public class ClientController {
         public void actionPerformed(ActionEvent actionEvent) {
             String name = JOptionPane.showInputDialog(null,"Enter Name");
             String password = JOptionPane.showInputDialog(null,"Enter Password");
-            password = BCrypt.hashpw(password, BCrypt.gensalt());
+            password = BCrypt.hashpw(password,"$2a$10$eSDBgW/bUUywmjzoJmehuu");
             client.send("/login " + "username:" + name + " password:" + password);
         }
     }

@@ -43,11 +43,12 @@ public class Model {
 
     public void ServerStart() {
         System.out.println("Server started.");
+        DatabaseConnector DBConnector = new DatabaseConnector();
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Waiting for connections!");
             // Go
-            ClientHandlerThread clientHandlerThread = new ClientHandlerThread(serverSocket,out);
+            ClientHandlerThread clientHandlerThread = new ClientHandlerThread(serverSocket,out,DBConnector);
             Thread clientHandler = new Thread(clientHandlerThread);
             clientHandler.start();
 

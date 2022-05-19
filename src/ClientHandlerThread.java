@@ -17,10 +17,12 @@ public class ClientHandlerThread implements Runnable{
     private ArrayList<Socket> connections = new ArrayList<>();
     private ArrayList<PrintWriter> out = new ArrayList<>();
     private ArrayList<ListenerThread> inList = new ArrayList<>();
+    private DatabaseConnector DBConnector;
 
-    public ClientHandlerThread(ServerSocket serverSocket, ArrayList<PrintWriter> out) {
+    public ClientHandlerThread(ServerSocket serverSocket, ArrayList<PrintWriter> out, DatabaseConnector DBConnector) {
         this.serverSocket = serverSocket;
         this.out = out;
+        this.DBConnector = DBConnector;
     }
 
     @Override
@@ -63,11 +65,13 @@ public class ClientHandlerThread implements Runnable{
                         String password = msg.split(" password:")[1];
                         System.out.println(name);
                         System.out.println(password);
-                    } else {
+                        DBConnector.Login(name,password);
+                    } else if(msg.startsWith("/msg")) {
+                        String id = msg.split("id:")[1].split(" ")[0];
+                        msg = msg.split("msg:")[1];
                         for (PrintWriter clientOut:
                                 out) {
-                            clientOut.println(in.getMsgQueue().peek());
-                            System.out.println("ello");
+                            clientOut.println(id + ": " + msg);
                         }
                     }
                     in.getMsgQueue().poll();

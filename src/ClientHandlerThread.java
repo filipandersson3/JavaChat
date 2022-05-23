@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This is a class
@@ -18,6 +19,7 @@ public class ClientHandlerThread implements Runnable{
     private ArrayList<PrintWriter> out = new ArrayList<>();
     private ArrayList<ListenerThread> inList = new ArrayList<>();
     private DatabaseConnector DBConnector;
+    private HashMap<Integer, String> loggedInList = new HashMap<Integer, String>();
 
     public ClientHandlerThread(ServerSocket serverSocket, ArrayList<PrintWriter> out, DatabaseConnector DBConnector) {
         this.serverSocket = serverSocket;
@@ -60,18 +62,28 @@ public class ClientHandlerThread implements Runnable{
                 String msg = in.getMsgQueue().peek();
                 if (!in.getMsgQueue().isEmpty() && msg != null) {
                     if (msg.startsWith("/login")) {
+                        int id = Integer.parseInt(msg.split("id:")[1].split(" ")[0]);
                         String name = msg.split(" username:")[1];
                         name = name.split(" password:")[0];
                         String password = msg.split(" password:")[1];
                         System.out.println(name);
                         System.out.println(password);
-                        DBConnector.Login(name,password);
+                        if (DBConnector.Login(name,password)) {
+                            loggedInList.put(id,name);
+                            out.get(id).println("Logged in!");
+                        } else {
+                            out.get(id).println("Failed to login.");
+                        }
                     } else if(msg.startsWith("/msg")) {
-                        String id = msg.split("id:")[1].split(" ")[0];
+                        int id = Integer.parseInt(msg.split("id:")[1].split(" ")[0]);
                         msg = msg.split("msg:")[1];
-                        for (PrintWriter clientOut:
-                                out) {
-                            clientOut.println(id + ": " + msg);
+                        if (loggedInList.containsKey(id)) {
+                            for (PrintWriter clientOut:
+                                    out) {
+                                clientOut.println(loggedInList.get(id) + ": " + msg);
+                            }
+                        } else {
+                            out.get(id).println("Must be logged in to chat.");
                         }
                     }
                     in.getMsgQueue().poll();

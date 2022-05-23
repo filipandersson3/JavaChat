@@ -62,14 +62,17 @@ public class ClientController {
             String name = JOptionPane.showInputDialog(null,"Enter Name");
             String password = JOptionPane.showInputDialog(null,"Enter Password");
             password = BCrypt.hashpw(password,"$2a$10$eSDBgW/bUUywmjzoJmehuu");
-            client.send("/login " + "username:" + name + " password:" + password);
+            client.send("/login id:" + id + " username:" + name + " password:" + password);
         }
     }
 
     private class SignupAL implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            System.out.println("sign up");
+            String name = JOptionPane.showInputDialog(null,"Enter New Name");
+            String password = JOptionPane.showInputDialog(null,"Enter New Password");
+            password = BCrypt.hashpw(password,"$2a$10$eSDBgW/bUUywmjzoJmehuu");
+            client.send("/signup id:" + id + " username:" + name + " password:" + password);
         }
     }
 }

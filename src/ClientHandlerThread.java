@@ -7,12 +7,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * This is a class
- * Created 2021-03-16
- *
- * @author Magnus Silverdal
- */
 public class ClientHandlerThread implements Runnable{
     private ServerSocket serverSocket;
     private ArrayList<Socket> connections = new ArrayList<>();
@@ -20,11 +14,14 @@ public class ClientHandlerThread implements Runnable{
     private ArrayList<ListenerThread> inList = new ArrayList<>();
     private DatabaseConnector DBConnector;
     private HashMap<Integer, String> loggedInList = new HashMap<Integer, String>();
+    private String motd = "";
 
-    public ClientHandlerThread(ServerSocket serverSocket, ArrayList<PrintWriter> out, DatabaseConnector DBConnector) {
+    public ClientHandlerThread(ServerSocket serverSocket, ArrayList<PrintWriter> out,
+                               DatabaseConnector DBConnector, String motd) {
         this.serverSocket = serverSocket;
         this.out = out;
         this.DBConnector = DBConnector;
+        this.motd = motd;
     }
 
     @Override
@@ -33,6 +30,7 @@ public class ClientHandlerThread implements Runnable{
         Thread connectionThread = new Thread(connectionListener);
         connectionThread.start();
         int connectionCount = 1;
+
         while (true) {
             System.out.print("");
             if (connectionListener.getConnections().size() >= connectionCount) {
@@ -53,7 +51,7 @@ public class ClientHandlerThread implements Runnable{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                out.get(connectionCount-1).println("Welcome idiot");
+                out.get(connectionCount-1).println(motd);
                 out.get(connectionCount-1).println("Your ID: " + (connectionCount-1));
                 connectionCount++;
             }
@@ -73,6 +71,17 @@ public class ClientHandlerThread implements Runnable{
                             out.get(id).println("Logged in!");
                         } else {
                             out.get(id).println("Failed to login.");
+                        }
+                    } else if (msg.startsWith("/signup")) {
+                        int id = Integer.parseInt(msg.split("id:")[1].split(" ")[0]);
+                        String name = msg.split(" username:")[1];
+                        name = name.split(" password:")[0];
+                        String password = msg.split(" password:")[1];
+                        if (DBConnector.Signup(name,password)) {
+                            loggedInList.put(id,name);
+                            out.get(id).println("Signed up and logged in!");
+                        } else {
+                            out.get(id).println("Failed to create a new user.");
                         }
                     } else if(msg.startsWith("/msg")) {
                         int id = Integer.parseInt(msg.split("id:")[1].split(" ")[0]);

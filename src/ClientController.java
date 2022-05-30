@@ -20,7 +20,7 @@ public class ClientController {
         ip = (String) JOptionPane.showInputDialog(null,"IP?","Connect to..",JOptionPane.QUESTION_MESSAGE);
         port = Integer.parseInt(JOptionPane.showInputDialog(null,"Port?","Connect to..",JOptionPane.QUESTION_MESSAGE));
         Scanner tgb = new Scanner(System.in);
-        client = new Model(ip,port);
+        client = new Model(ip,port,"");
         client.ClientStart();
         view = new ClientView();
 

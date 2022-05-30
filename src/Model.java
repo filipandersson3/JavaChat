@@ -16,10 +16,12 @@ public class Model {
     private ServerSocket serverSocket;
     private ArrayList<PrintWriter> out = new ArrayList<>();
     private ListenerThread in;
+    private String motd;
 
-    public Model(String ip, int port) {
+    public Model(String ip, int port, String motd) {
         this.ip = ip;
         this.port = port;
+        this.motd = motd;
     }
 
     public void ClientStart() {
@@ -45,20 +47,22 @@ public class Model {
         System.out.println("Server started.");
         DatabaseConnector DBConnector = new DatabaseConnector();
         try {
+            // Try to start a server socket on the port
             serverSocket = new ServerSocket(port);
             System.out.println("Waiting for connections!");
-            // Go
-            ClientHandlerThread clientHandlerThread = new ClientHandlerThread(serverSocket,out,DBConnector);
+
+            // Start thread for handling clients connecting and sending messages to server
+            ClientHandlerThread clientHandlerThread = new ClientHandlerThread(serverSocket,out,DBConnector,motd);
             Thread clientHandler = new Thread(clientHandlerThread);
             clientHandler.start();
 
-                //Protocol
         } catch (IOException e) {
-            System.out.println("Server fail");
+            System.out.println("Server fail, try restarting on another port");
         }
     }
 
     public void send(String msg) {
+        // Print to every printwriter
         for (PrintWriter pw:
              out) {
             pw.println(msg);
@@ -66,6 +70,7 @@ public class Model {
     }
 
     public void stop() {
+        // Close printwriters and close socket
         for (PrintWriter pw:
              out) {
             pw.close();
@@ -82,7 +87,4 @@ public class Model {
         return in;
     }
 
-    public ArrayList<PrintWriter> getOut() {
-        return out;
-    }
 }

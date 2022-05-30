@@ -8,7 +8,7 @@ public class DatabaseConnector {
         try {
             // Set up connection to database
             conn = DriverManager.getConnection(
-                    "jdbc:mysql://"+ DataBaseLoginData.DBurl +":" + DataBaseLoginData.port + "/" +
+                    "jdbc:mysql://" + DataBaseLoginData.DBurl + ":" + DataBaseLoginData.port + "/" +
                             DataBaseLoginData.DBname + "? " +
                             "allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC",
                     DataBaseLoginData.user, DataBaseLoginData.password);
@@ -20,7 +20,6 @@ public class DatabaseConnector {
     }
 
     public boolean Login(String name, String password) {
-        String result = "";
         try {
             // Setup statement
             Statement stmt = conn.createStatement();
@@ -29,8 +28,6 @@ public class DatabaseConnector {
             String SQLQuery = "SELECT * FROM fipann_users WHERE name=\"" + name + "\";";
             ResultSet rset = stmt.executeQuery(SQLQuery);
 
-            // Loop through the result set and convert to String
-            // Need to know the table-structure
             while (rset.next()) {
                 System.out.println(rset.getString("password"));
                 if (Objects.equals(password, rset.getString("password"))) {
@@ -45,4 +42,19 @@ public class DatabaseConnector {
     }
 
 
+    public boolean Signup(String name, String password) {
+        try {
+            // Setup statement
+            Statement stmt = conn.createStatement();
+
+            // Create query and execute
+            String SQLQuery = "INSERT INTO fipann_users (name, password) " +
+                    "VALUES (\"" + name + "\", \"" + password + "\");";
+            int result = stmt.executeUpdate(SQLQuery);
+            return result > 0;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
 }

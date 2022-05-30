@@ -20,6 +20,7 @@ public class ListenerThread implements Runnable{
             try {
                 msg = in.readLine();
             } catch (IOException e) {
+                msg = null;
             }
             if (msg != null) {
                 System.out.println(msg);

@@ -29,7 +29,6 @@ public class DatabaseConnector {
             ResultSet rset = stmt.executeQuery(SQLQuery);
 
             while (rset.next()) {
-                System.out.println(rset.getString("password"));
                 if (Objects.equals(password, rset.getString("password"))) {
                     return true;
                 }
@@ -44,14 +43,22 @@ public class DatabaseConnector {
 
     public boolean Signup(String name, String password) {
         try {
-            // Setup statement
+            // check for existing user, otherwise add new to database
             Statement stmt = conn.createStatement();
 
-            // Create query and execute
-            String SQLQuery = "INSERT INTO fipann_users (name, password) " +
-                    "VALUES (\"" + name + "\", \"" + password + "\");";
-            int result = stmt.executeUpdate(SQLQuery);
-            return result > 0;
+            String SQLQuery = "SELECT * FROM fipann_users WHERE name=\"" + name + "\";";
+            ResultSet rset = stmt.executeQuery(SQLQuery);
+
+            if (!rset.next()) {
+                stmt = conn.createStatement();
+
+                SQLQuery = "INSERT INTO fipann_users (name, password) " +
+                        "VALUES (\"" + name + "\", \"" + password + "\");";
+                int result = stmt.executeUpdate(SQLQuery);
+                return result > 0;
+            }
+            return false;
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return false;

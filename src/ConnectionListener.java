@@ -13,6 +13,7 @@ public class ConnectionListener implements Runnable{
 
     @Override
     public void run() {
+        //Listens for and adds connections
         String msg = null;
         while (true) {
             try {

@@ -31,11 +31,11 @@ public class Model {
             System.out.println("Client failed to connect");
             System.exit(0);
         }
-        //Connected
+        // Connected, create listenerthread and printwriter for communication with server
         try {
             out.add(new PrintWriter(socket.getOutputStream(),true));
             in = new ListenerThread(new BufferedReader(new InputStreamReader(socket.getInputStream()
-            )),false);
+            )));
             Thread listener = new Thread(in);
             listener.start();
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class Model {
         System.out.println("Server started.");
         DatabaseConnector DBConnector = new DatabaseConnector();
         try {
-            // Try to start a server socket on the port
+            // Start a server socket on the port
             serverSocket = new ServerSocket(port);
             System.out.println("Waiting for connections!");
 

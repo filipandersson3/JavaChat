@@ -17,29 +17,24 @@ public class ClientController {
     }
 
     public ClientController() {
-        ip = (String) JOptionPane.showInputDialog(null,"IP?","Connect to..",JOptionPane.QUESTION_MESSAGE);
+        ip = JOptionPane.showInputDialog(null,"IP?","Connect to..",JOptionPane.QUESTION_MESSAGE);
         port = Integer.parseInt(JOptionPane.showInputDialog(null,"Port?","Connect to..",JOptionPane.QUESTION_MESSAGE));
         Scanner tgb = new Scanner(System.in);
         client = new Model(ip,port,"");
         client.ClientStart();
         view = new ClientView();
 
-        JFrame frame = new JFrame("Chat");
-        frame.setContentPane(view.getPanel1());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
         view.getSendButton().addActionListener(new SendAL());
         view.getLoginButton().addActionListener(new LoginAL());
         view.getSignupButton().addActionListener(new SignupAL());
+        //print server messages, except for id message which is saved as id
         while (true) {
             String msg = client.getIn().getMsgQueue().peek();
             if(!client.getIn().getMsgQueue().isEmpty() && msg != null) {
                 if (msg.startsWith("Your ID: ")) {
                     id = msg.split("Your ID: ")[1];
-                    System.out.println(id);
                 } else {
-                    view.getChatTextArea().append(msg + "\n");
+                    view.showMsg(msg);
                 }
                 client.getIn().getMsgQueue().poll();
             }
@@ -51,8 +46,8 @@ public class ClientController {
     private class SendAL implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            client.send("/msg id:" + id + " msg:" + view.getMsgField().getText());
-            view.getMsgField().setText("");
+            client.send("/msg id:" + id + " msg:" + view.getInput());
+            view.clearInput();
         }
     }
 

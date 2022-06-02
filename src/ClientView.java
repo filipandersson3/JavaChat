@@ -8,6 +8,14 @@ public class ClientView {
     private JButton loginButton;
     private JPanel panel1;
 
+    public ClientView() {
+        JFrame frame = new JFrame("Chat");
+        frame.setContentPane(panel1);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     public JPanel getPanel1() {
         return panel1;
     }
@@ -30,5 +38,17 @@ public class ClientView {
 
     public JButton getSendButton() {
         return sendButton;
+    }
+
+    public void showMsg(String msg) {
+        chatTextArea.append(msg + "\n");
+    }
+
+    public String getInput() {
+        return msgField.getText();
+    }
+
+    public void clearInput() {
+        msgField.setText("");
     }
 }

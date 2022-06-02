@@ -1,17 +1,33 @@
+import javax.swing.*;
 import java.sql.*;
 import java.util.Objects;
 
 public class DatabaseConnector {
     Connection conn;
+    String DBurl;
+    String DBport;
+    String DBname;
+    String DBuser;
+    String DBpassword;
 
     public DatabaseConnector() {
+        DBurl = JOptionPane.showInputDialog(null,
+                "Database url?","Database setup",JOptionPane.QUESTION_MESSAGE);
+        DBport = JOptionPane.showInputDialog(null,
+                "Database port?","Database setup",JOptionPane.QUESTION_MESSAGE);
+        DBname = JOptionPane.showInputDialog(null,
+                "Database name?","Database setup",JOptionPane.QUESTION_MESSAGE);
+        DBuser = JOptionPane.showInputDialog(null,
+                "Database user?","Database setup",JOptionPane.QUESTION_MESSAGE);
+        DBpassword = JOptionPane.showInputDialog(null,
+                "Database password?","Database setup",JOptionPane.QUESTION_MESSAGE);
         try {
             // Set up connection to database
             conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + DataBaseLoginData.DBurl + ":" + DataBaseLoginData.port + "/" +
-                            DataBaseLoginData.DBname + "? " +
+                    "jdbc:mysql://" + DBurl + ":" + DBport + "/" +
+                            DBname + "? " +
                             "allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC",
-                    DataBaseLoginData.user, DataBaseLoginData.password);
+                    DBuser, DBpassword);
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Failed to log in, check your database and credentials and try again. Shutting down...");

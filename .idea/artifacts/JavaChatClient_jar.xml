@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JavaChatClient:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JavaChatClient_jar</output-path>
+    <root id="archive" name="JavaChat.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF client/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="JavaChat" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../libraries/mysql-connector-java-8.0.28.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
